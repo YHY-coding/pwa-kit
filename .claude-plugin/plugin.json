@@ -1,0 +1,17 @@
+{
+  "name": "pwa-kit",
+  "version": "0.1.0",
+  "description": "端末の中だけで動く小さなPWAを、雛形から作り、架空データで試し、iPhoneの幅で確かめるためのスキル3つ(日本語)",
+  "author": {
+    "name": "pwa-kit"
+  },
+  "keywords": [
+    "pwa",
+    "service-worker",
+    "offline",
+    "test-data",
+    "mobile",
+    "japanese"
+  ],
+  "license": "MIT"
+}

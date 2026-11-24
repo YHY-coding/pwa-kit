@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__APP_NAME__</title>
+<meta name="theme-color" content="__THEME__">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="__APP_SHORT__">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<!-- 待機画面。読み込みが終わるまで本体を見せない。押すと飛ばせる -->
+<div id="splash" class="splash" role="status" aria-label="__APP_NAME__ を開いています">
+  <svg class="splash-mark" viewBox="0 0 120 120" aria-hidden="true">
+    <path class="ln ln1" d="M26 40 H94"/>
+    <path class="ln ln2" d="M26 60 H94"/>
+    <path class="ln ln3" d="M26 80 H66"/>
+    <path class="nib" d="M74 80 l14 -14 6 6 -14 14 -8 2 z"/>
+  </svg>
+  <p class="splash-name">__APP_NAME__</p>
+  <p class="splash-hint">押すとすぐ開きます</p>
+</div>
+
+<div id="app" class="app" hidden>
+  <header class="head">
+    <h1 class="title">__APP_NAME__</h1>
+    <p class="today" id="today"></p>
+    <button type="button" class="link" id="open-settings">設定</button>
+  </header>
+
+  <div id="update-bar" class="update-bar" hidden>
+    <span>新しい版があります</span>
+    <button type="button" id="do-update">更新する</button>
+  </div>
+
+  <main>
+    <p class="count" id="count"></p>
+    <ol class="list" id="list"></ol>
+    <p class="empty" id="empty" hidden>まだ何もありません。下の欄から書きはじめます。</p>
+  </main>
+
+  <form class="entry" id="entry" autocomplete="off">
+    <label class="sr" for="text">書く内容</label>
+    <input id="text" name="text" type="text" maxlength="200" placeholder="ひとこと書く" enterkeyhint="done">
+    <button type="submit">書く</button>
+  </form>
+</div>
+
+<dialog id="settings" class="sheet">
+  <h2>設定</h2>
+  <section>
+    <h3>書き出し</h3>
+    <p>この端末の中のデータを、1つのファイル(JSON)にします。機種変更やアイコンの入れ直しの前に使います。</p>
+    <div class="row">
+      <button type="button" id="export">ファイルに書き出す</button>
+      <button type="button" id="copy" class="quiet">写しを取る(コピー)</button>
+    </div>
+  </section>
+  <section>
+    <h3>読み込み</h3>
+    <p>書き出したファイルを読み込みます。いまのデータは置き換わります。</p>
+    <input type="file" id="import" accept="application/json,.json">
+  </section>
+  <section>
+    <h3>全部消す</h3>
+    <p>この端末の中のデータを全部消します。元に戻せません。</p>
+    <label class="check"><input type="checkbox" id="sure"> 消してよいことを確かめた</label>
+    <button type="button" id="wipe" class="danger" disabled>全部消す</button>
+  </section>
+  <p class="note" id="msg" role="status"></p>
+  <p class="note">データはこの端末のブラウザの中だけにあります。外へは送りません。</p>
+  <button type="button" id="close-settings" class="quiet close">閉じる</button>
+</dialog>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

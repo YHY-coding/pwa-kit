@@ -1,0 +1,139 @@
+/* 色は紙と墨。差し色は1つだけ(--accent)。明るい画面と暗い画面の両方を持つ。 */
+:root {
+  --accent: __THEME__;
+  --paper: #f4f1ea;
+  --ink: #23272b;
+  --sub: #5d615f;
+  --rule: #cfc9bb;
+  --field: #fffdf8;
+  --danger: #8c2f24;
+  --on-accent: #fffdf8;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #17191a;
+    --ink: #e9e5db;
+    --sub: #a5a59d;
+    --rule: #3a3d3c;
+    --field: #202324;
+    --danger: #e08a7c;
+  }
+}
+
+* { box-sizing: border-box; }
+/* display を指定した要素でも、hidden を付けたら必ず隠す(付けないと flex などが勝って見えてしまう) */
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 18px/1.7 -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+  overflow-wrap: anywhere;
+}
+h1, h2, h3, p, ol { margin: 0; padding: 0; }
+button, input { font: inherit; color: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+/* ---------- 待機画面 ---------- */
+.splash {
+  position: fixed; inset: 0; z-index: 10;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end;
+  padding: 0 28px calc(22vh + env(safe-area-inset-bottom));
+  background: var(--paper);
+  transition: transform .42s cubic-bezier(.6, 0, .2, 1);
+}
+.splash.leave { transform: translateY(-100%); }
+.splash-mark { width: 124px; height: 124px; margin-left: -18px; }
+.splash-mark .ln {
+  fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 70; stroke-dashoffset: 70;
+  animation: draw .5s ease-out forwards;
+}
+.splash-mark .ln2 { animation-delay: .22s; }
+.splash-mark .ln3 { animation-delay: .44s; stroke-dasharray: 42; stroke-dashoffset: 42; }
+.splash-mark .nib {
+  fill: var(--accent); opacity: 0; transform: translate(-40px, 0);
+  animation: nib .55s .44s ease-out forwards;
+}
+.splash-name {
+  font: 600 30px/1.3 "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  letter-spacing: .04em;
+  opacity: 0; animation: rise .5s .7s ease-out forwards;
+}
+.splash-hint { margin-top: 10px; font-size: 14px; color: var(--sub); opacity: 0; animation: rise .4s 1.1s ease-out forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes nib { 30% { opacity: 1; } to { opacity: 1; transform: none; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .splash { transition: none; }
+  .splash-mark .ln, .splash-mark .ln3 { animation: none; stroke-dashoffset: 0; }
+  .splash-mark .nib, .splash-name, .splash-hint { animation: none; opacity: 1; transform: none; }
+}
+
+/* ---------- 本体 ---------- */
+.app {
+  max-width: 640px; margin: 0 auto;
+  padding: calc(18px + env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left));
+}
+.head { display: grid; grid-template-columns: 1fr auto; align-items: end; row-gap: 2px; padding-bottom: 12px; border-bottom: 2px solid var(--ink); }
+.title { font: 600 28px/1.3 "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; letter-spacing: .03em; grid-column: 1 / -1; }
+.today { color: var(--sub); font-size: 16px; }
+
+.link {
+  background: none; border: 0; padding: 0 4px; min-height: 44px; min-width: 44px;
+  color: var(--accent); text-decoration: underline; text-underline-offset: 4px; cursor: pointer;
+}
+@media (prefers-color-scheme: dark) { .link { color: var(--ink); } }
+
+.update-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.update-bar button, .entry button, .sheet button {
+  min-height: 48px; padding: 0 18px; border: 1.5px solid var(--ink); border-radius: 3px;
+  background: var(--ink); color: var(--paper); cursor: pointer;
+}
+
+main { padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+.count { padding-top: 10px; color: var(--sub); font-size: 15px; min-height: 36px; }
+.list { list-style: none; }
+.list li { padding: 12px 0 4px; border-bottom: 1px solid var(--rule); }
+.item-text { font-size: 19px; line-height: 1.6; }
+.item-meta { display: flex; justify-content: space-between; align-items: center; color: var(--sub); font-size: 15px; }
+.empty { padding: 28px 0; color: var(--sub); }
+
+/* 入力は親指が届く下に置く */
+.entry {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; gap: 10px;
+  padding: 12px max(20px, env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  background: var(--paper); border-top: 1px solid var(--rule);
+}
+.entry input {
+  flex: 1; min-width: 0; min-height: 52px; padding: 0 14px;
+  background: var(--field); border: 1.5px solid var(--ink); border-radius: 3px;
+}
+.entry button { min-height: 52px; background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+@media (prefers-color-scheme: dark) { :focus-visible { outline-color: var(--ink); } }
+
+/* ---------- 設定 ---------- */
+.sheet {
+  width: min(560px, 100vw - 24px); max-height: calc(100dvh - 40px); overflow-y: auto;
+  padding: 22px 20px; border: 1.5px solid var(--ink); border-radius: 4px;
+  background: var(--paper); color: var(--ink);
+}
+.sheet::backdrop { background: rgba(0, 0, 0, .45); }
+.sheet h2 { font: 600 24px/1.3 "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif; }
+.sheet section { padding: 16px 0; border-bottom: 1px solid var(--rule); }
+.sheet h3 { font-size: 18px; }
+.sheet section p { color: var(--sub); font-size: 16px; margin-bottom: 10px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.sheet button.quiet { background: transparent; color: var(--ink); }
+.sheet button.danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+.sheet button:disabled { opacity: .45; cursor: default; }
+.sheet input[type=file] { max-width: 100%; font-size: 16px; min-height: 44px; }
+.check { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-bottom: 8px; }
+.check input { width: 22px; height: 22px; accent-color: var(--accent); }
+.note { padding-top: 12px; color: var(--sub); font-size: 15px; }
+.close { margin-top: 14px; width: 100%; }
